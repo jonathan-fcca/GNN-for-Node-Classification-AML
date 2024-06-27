@@ -89,28 +89,8 @@ class config:
 
     # Model collections. Create the configuration of each model here.
     model_collections = {
-        "GraphSAGE-mean": {
-            "base_model": "GraphSAGE_PyG",
-            "num_layers": 2,
-            "num_neighbors": [25, 10],
-            "hidden_node_channels": 256,
-            "dropout": 0,
-            "jk": None
-        },
-        
-        "GraphSAGE-GCN-benchmark-trans":{
-            "base_model": "GraphSAGE_PyG",
-            "overwrite": {
-                "framework": "transductive",
-                "sampling_strategy": "None",
-                "lr" : 5e-5,
-                "weight_decay": 5e-4,
-            },
-            "num_layers": 2,
-            "hidden_node_channels": 64,
-            "dropout": 0,
-            "aggr": "mean",
-        },
+
+        ### DGL 
 
         "GraphSAGE-DGL-mean":{
             "base_model": "GraphSAGE_DGL",
@@ -120,89 +100,22 @@ class config:
                 "lr" : 5e-3,
                 "weight_decay": 5e-4,
             },
+            # Registeration inforamtion for MLflow
+            "register_info":{
+                "description": "Benchmark GraphSAGE.",
+                "tags": {
+                    "aggr":"mean", 
+                    }, 
+            },
             "num_layers": 2,
             "num_neighbors": [25, 10],
             "hidden_node_channels": 64,
-            "dropout": 0.9,
-            "jk": None,
-            "aggr": "gcn",
-        },
-
-        # Transductive benchmark GAT of Planetoid; 
-        # For PubMed: output_heads=8, lr=0.01, weight_decay=0.001
-        "GAT-benchmark-trans": {
-            "base_model": "GAT_Custom",
-            "overwrite": {
-                "framework": "transductive",
-                "sampling_strategy": "None",
-                "lr" : 5e-3,
-                "weight_decay": 5e-4,
-            },
-            "hidden_node_channels_per_head": 8,
-            "num_layers": 2,
-            "heads": 8,
-            "output_haeds": 1,
             "dropout": 0.6,
             "jk": None,
-            "v2": False,
-        },
-        
-        "GAT-SAGE-trans": {
-            "base_model": "GAT_Custom",
-            "overwrite": {
-                "framework": "transductive",
-                "sampling_strategy": "SAGE",
-                "batch_size": 999999,
-                "lr" : 5e-3,
-                "weight_decay": 5e-4,
-            },
-            "hidden_node_channels_per_head": 8,
-            "num_layers": 2,
-            "num_neighbors": [25, 10],
-            "heads": 8,
-            "output_haeds": 1,
-            "dropout": 0,
-            "jk": None,
-            "v2": False,
-        },
-        
-        # Inductive benchmark GAT of PPI; 
-        "GAT-benchmark-in": {
-            "base_model": "GAT_Custom",
-            "overwrite": {
-                "framework": "inductive",
-                "sampling_strategy": "GraphBatching",
-                "batch_size": 2,
-                "lr" : 5e-3,
-                "weight_decay": 0,
-            },
-            "num_layers": 3,
-            "heads": [4, 4],
-            "hidden_node_channels_per_head": [256, 256],
-            "output_haeds": 6,
-            "dropout": 0,
-            "jk": None,
-            "v2": False,
-            "skip_connection": True,
-        },
-        
-        "GAT-PyG-in": {
-            "base_model": "GAT_PyG",
-            "overwrite": {
-                "framework": "inductive",
-                "sampling_strategy": "GraphBatching",
-                "batch_size": 2,
-                "lr" : 5e-3,
-                "weight_decay": 0,
-            },
-            "num_layers": 3,
-            "heads": 4,
-            "hidden_node_channels_per_head": 256,
-            "dropout": 0,
-            "jk": None,
-            "v2": False,
+            "aggr": "mean",
         },
 
+        # For PubMed: output_heads=8, lr=0.01, weight_decay=0.001
         "GAT-benchmark-trans-DGL": {
             "base_model": "GAT_DGL_Custom",
             "overwrite": {
@@ -211,18 +124,90 @@ class config:
                 "lr" : 5e-3,
                 "weight_decay": 5e-4,
             },
+            "register_info":{
+                "description": "Benchmark model from GAT paper.",
+                "tags": {
+                    "v2": False, # Change to v2 if v2 is True
+                    }, 
+            },
             "hidden_node_channels_per_head": 8,
             "num_layers": 2,
             "heads": 8,
-            "output_haeds": 1,
-            "dropout": 0.7,
-            "jk": None,
+            "output_heads": 1,
+            "dropout": 0.6,
+            "attention_dropout": 0.6,
+            # "jk": None,
             "v2": False,
+            "residual": False,
         },
 
-        "GIN": {
+        # "GAT-SAGE-trans-DGL": {
+        #     "base_model": "GAT_DGL_Custom",
+        #     "overwrite": {
+        #         "framework": "transductive",
+        #         "sampling_strategy": "None",
+        #         "lr" : 5e-3,
+        #         "weight_decay": 5e-4,
+        #     },
+        #     "hidden_node_channels_per_head": 8,
+        #     "num_neighbors": [25, 10],
+        #     "num_layers": 2,
+        #     "heads": 8,
+        #     "output_heads": 1,
+        #     "dropout": 0.7,
+        #     "jk": None,
+        #     "v2": False,
+        # },
 
-        }
+        "GAT-benchmark-in-DGL": {
+            "base_model": "GAT_DGL_Custom",
+            "overwrite": {
+                "framework": "inductive",
+                "sampling_strategy": "GraphBatching",
+                "lr" : 5e-3,
+                "batch_size": 2,
+                "weight_decay": 0,
+            },
+            # Registeration inforamtion for MLflow
+            "register_info":{
+                "description": "Benchmark model from GAT paper.",
+                "tags": {
+                    "v2": True, # Change to v2 if v2 is True
+                    }, 
+            },
+            "hidden_node_channels_per_head": [256, 256],
+            "num_layers": 3,
+            "heads": [4, 4],
+            "output_heads": 6,
+            "dropout": 0,
+            "attention_dropout": 0,
+            "jk": None,
+            "v2": True,
+            "residual": False,
+        },
+
+        "GIN-benchmark-trans-DGL": {
+            "base_model": "GIN_DGL_Custom",
+            "overwrite": {
+                "framework": "transductive",
+                "sampling_strategy": "None",
+                "lr" : 5e-3,
+                "weight_decay": 5e-4,
+            },
+            "hidden_node_channels": 64,
+            "num_gcn_layers": 5,
+            "num_lin_layers": 2,
+            "aggregator_type": 'sum',
+            "init_eps": 0,
+            "learn_eps": False,
+            "dropout": 0.6,
+            "mlp_dropout": 0.3,
+            "mlp_bias": True,
+        },
+
+        # "GIN": {
+
+        # }
     }
 
     # Dataset collections

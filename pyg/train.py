@@ -19,6 +19,7 @@ from mlflow.models.signature import ModelSignature
 from mlflow.types.schema import Schema, TensorSpec
 
 
+
 def node_classification_step(mode: str, epoch, loader, model, loss_fn, optimizer, enable_tqdm, sampling_strategy, device="cpu", multilabel=False, threshold=0):
     if mode == "test":
         model.eval()
@@ -158,7 +159,7 @@ def train_gnn(config):
         patience = general_config["num_epochs"]
 
     # Setup training steps according to task type
-    sampling_strategy = config["general_config"]["sampling_strategy"]
+    sampling_strategy = general_config["sampling_strategy"]
     if dataset_config["task_type"] == "single-label-NC":
         run_step = lambda *args, **kwargs: node_classification_step(*args, model=model, loss_fn=loss_fn, optimizer=optimizer,
                                                                     enable_tqdm=general_config["tqdm"], sampling_strategy=sampling_strategy, device=device, **kwargs)

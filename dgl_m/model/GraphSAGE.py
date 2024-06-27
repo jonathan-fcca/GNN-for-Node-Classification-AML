@@ -25,9 +25,12 @@ class GraphSAGE_DGL(nn.Module):
         # activation_kwargs: Optional[Dict[str, Any]] = None,
         norm: Union[Callable, None] = None,
         jk: Optional[str] = None,
+        config={},
         **kwargs,
     ):
         super().__init__()
+
+        self.config = config
         
         self.in_channels = in_channels
         self.hidden_channels = hidden_channels
