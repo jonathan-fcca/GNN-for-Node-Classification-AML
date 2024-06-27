@@ -1,9 +1,10 @@
 from loguru import logger
 
 
-from utils import create_parser, set_global_seed, setup_mlflow, setup_logger, init_config, update_config
+from utils_dgl import create_parser, set_global_seed, setup_mlflow, setup_logger, init_config, update_config
 from dgl_m.train import train_gnn
 from dgl_m.inference import infer_gnn
+from dgl_m.evaluate import eval_gnn
 
 def main():
     
@@ -11,14 +12,13 @@ def main():
     config = init_config()
     
     # Setup arguments
-    parser = create_parser(config)
-    args = parser.parse_args()
+    args = create_parser(config)
     
     # Update configurations 
     config = update_config(dict(vars(config)), vars(args))
 
     # Setup logger
-    setup_logger()
+    setup_logger(args)
     
     
     # Setup MLflow
@@ -30,10 +30,11 @@ def main():
     if args.mode == 'train':
         train_gnn(config)
     
-    elif args.mode == 'inference':
-        logger.info("Start Inference")
-        infer_gnn(config)
+    if args.mode == 'evaluate':
+        eval_gnn(config)
     
+    elif args.mode == 'inference':
+        infer_gnn(config)
     
 
 if __name__ == "__main__":
